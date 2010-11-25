@@ -174,6 +174,20 @@ describe Rack::Request do
     req[:foo].should.equal 'jaz'
   end
 
+  should "set value to key on params from POST data with #[]=" do
+    req = Rack::Request.new \
+      Rack::MockRequest.env_for("/?foo=duh",
+        "REQUEST_METHOD" => 'POST',
+        :input => "quux=bla")
+    req[:foo].should.equal 'duh'
+    req['foo'] = 'bar'
+    req['foo'].should.equal 'bar'
+
+    req['quux'].should.equal 'bla'
+    req['quux'] = 'jaz'
+    req['quux'].should.equal 'jaz'
+  end
+
   should "return values for the keys in the order given from values_at" do
     req = Rack::Request.new \
       Rack::MockRequest.env_for("?foo=baz&wun=der&bar=ful")
